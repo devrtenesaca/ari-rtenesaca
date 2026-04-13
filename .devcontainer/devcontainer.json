@@ -1,0 +1,25 @@
+{
+    "name": "Python URL Shortener Dev",
+    // 1. Apuntar al Dockerfile existente en la carpeta raíz
+    "build": {
+        "dockerfile": "../Dockerfile",
+        "context": ".."
+    },
+    // 2. Configuraciones de VS Code dentro del contenedor
+    "settings": {
+        "python.defaultInterpreterPath": "/usr/local/bin/python",
+        "python.linting.enabled": true,
+        "python.linting.pylintEnabled": true,
+        "python.formatting.provider": "black"
+    },
+    // 3. Extensiones útiles que se instalarán AUTOMÁTICAMENTE en el contenedor
+    "extensions": [
+        "ms-python.python", // Soporte oficial de Python
+        "ms-python.vscode-pylint", // Linter para calidad de código
+        "ms-python.black-formatter" // Formateador de código
+    ],
+    // 4. Asegurar que las dependencias se instalen si el Dockerfile cambia
+    "postCreateCommand": "pip3 install --user -r requirements.txt",
+    // 5. Comportamiento al cerrar
+    "shutdownAction": "stopContainer"
+}
