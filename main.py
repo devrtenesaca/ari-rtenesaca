@@ -5,8 +5,10 @@ import requests
 import json
 
 
-API_URL = "https://is.gd/create.php"
-INPUT_FILENAME =  "urls.txt"
+#API_URL = "https://is.gd/create.php"
+#INPUT_FILENAME =  "urls.txt"
+API_URL = os.environ.get("IS_GD_API_URL", "https://is.gd/create.php")
+INPUT_FILENAME = os.environ.get("INPUT_FILENAME", "urls.txt")
 
 #caching memory
 url_cache = {}
