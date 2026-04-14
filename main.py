@@ -16,7 +16,7 @@ url_cache = {}
 def shorten_url(original_url):
     if original_url in url_cache:
        # print(f"-> Usando caché para: {original_url}", file=sys.stderr)
-        return url_cache[original_url]
+        return url_cache[original_url], None
 
     try:
         params = {
@@ -28,28 +28,25 @@ def shorten_url(original_url):
         try:
             data = response.json()
         except json.JSONDecodeError:
-            print(f"Error: the answer from is.gd for {original_url} is not a valid JSON", file=sys.stderr)
-            return None
+            error_msg = f"Error: answer is.gd for {original_url} is not a valid JSON"
+            return None, error_msg
+        
         if response.status_code == 200 and "shorturl" in data:
             short_url = data["shorturl"]
             url_cache[original_url] = short_url
-            return short_url
+            return short_url, None
         
         elif "errormessage" in data:
             error_code = data.get("errorcode", "unknown")
             error_msg = data.get("errormessage", "Error unknown")
-            print(f"Error: API is.gd (code {error_code}) para {original_url}: {error_msg}", file=sys.stderr)
+            error_msg = f"Error: API is.gd (code {error_code}) for {original_url}: {error_msg}"
             if error_code == 3:
-                print("-> rate limit exceeded, please wait one minute at least.", file=sys.stderr)
-                
-                
-            return None
+                error_msg = f"Error: rate limit exceeded, please wait one minute at least."
+            return None, error_msg
         else:
-            
-            print(f"Error HTTP {response.status_code} try to shorten {original_url}", file=sys.stderr)
-            return None
+            return None, f"Error HTTP {response.status_code}" 
     except requests.RequestException as e:
-        print(f"Error: conection with is.gd to obtain {original_url}: {e}, file=sys.stderr")
+        return None, f"Error network connection: {e}"
 
 
 
@@ -69,11 +66,11 @@ def main():
         sys.exit(1)
 
     for url in original_urls:
-        short_url = shorten_url(url)
+        short_url, error_msg = shorten_url(url)
         if short_url:
             print(f"{short_url},{url}")
         else:
-            print(f"Error:, {url}")
+           print(f"ERROR: {error_msg}", file=sys.stderr)
 
 
 #print(shorten_url("https://www.rei.com/c/mountain-bike-helmets"))
