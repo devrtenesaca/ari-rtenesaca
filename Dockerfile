@@ -1,17 +1,17 @@
-# 1. Usa una imagen base oficial de Python (ligera)
+# 1. Image Python (lightweight)
 FROM python:3.9-slim
 
-# 2. Establece el directorio de trabajo dentro del contenedor
+# 2. set the working directory in the container
 WORKDIR /app
 
-# 3. Copia el archivo requirements.txt primero para aprovechar la caché de Docker
+# 3. copy the requirements file to the container
 COPY requirements.txt .
 
-# 4. Instala la librería 'requests' dentro del contenedor
+# 4. Install the 'requests' library inside the container
 RUN pip install --no-cache-dir -r requirements.txt
 
-# 5. Copia el script Python y el archivo urls.txt al contenedor
+# 5. Copy the Python script and the urls.txt file to the container
 COPY main.py urls.txt .
 
-# 6. Comando por defecto para ejecutar el script cuando el contenedor inicie
+# 6. Set the command to run the Python script when the container starts
 CMD ["python", "main.py"]
